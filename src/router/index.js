@@ -21,6 +21,11 @@ const routes = [
     component: () => import('../views/map/sanwei.vue')
   },
   {
+    path: '/map',
+    name: 'map',
+    component: () => import('../views/map/tiandi.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
