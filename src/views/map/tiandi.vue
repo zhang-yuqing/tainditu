@@ -41,6 +41,7 @@ export default {
       pointsEight:[],
       wulong:[],
       laocun:[],
+      areaPoints:[],
     }
   },
   mounted(){
@@ -55,6 +56,7 @@ export default {
     this.lngLatPoint('pointsEight',pointsEight.ObjItems[0].Object.ObjectDetail.Latlng);
     this.lngLatPoint('wulong',wulong.ObjItems[0].Object.ObjectDetail.Latlng);
     this.lngLatPoint('laocun',laocun.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('areaPoints',areaPoints.ObjItems[0].Object.ObjectDetail.Latlng);
     this.maoInit();
   },
   methods: {
@@ -151,6 +153,7 @@ export default {
       this.paintingLine(this.pointsSix,5);
       this.paintingLine(this.pointsSeven,1);
       this.paintingLine(this.pointsEight,1);
+      this.paintingLine(this.areaPoints,8);
       // Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
       // const viewer = new Cesium.Viewer('cesiumContainer', {
       // selectionIndicator: false,
@@ -175,7 +178,6 @@ export default {
     },
     //划线
     paintingLine(data,wid){
-      console.log(wid)
       this.viewer.entities.add({
         polyline: {
           // fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
@@ -238,6 +240,9 @@ export default {
           break;
         case "laocun":
           this.laocun = obj;
+          break;
+        case "areaPoints":
+          this.areaPoints = obj;
           break;
       }
     },
