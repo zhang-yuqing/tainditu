@@ -1,19 +1,36 @@
 <template>
-  <div>
-
+  <div class="mapWorld">
+    <!-- 天地图demo -->
+    <div id="mapWorld" class="map"></div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "",
+  name: "tianDiView",
   data() {
     return {}
   },
-  methods: {}
+  mounted(){
+    this.maoInit();
+  },
+  methods: {
+    maoInit(){
+        
+    },
+  }
 }
 </script>
 
 <style lang="less" scoped>
-
+.mapWorld{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  .map{
+    width: 100%;
+    height: 100%;
+    background-color: aquamarine;
+  }
+}
 </style>

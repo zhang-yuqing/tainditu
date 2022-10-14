@@ -11,9 +11,14 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/tiandi',
+    path: '/tiandi',  //天地地图
     name: 'tiandi',
     component: () => import('../views/map/index.vue')
+  },
+  {
+    path: '/sanwei',
+    name: 'sanwei',
+    component: () => import('../views/map/sanwei.vue')
   },
   {
     path: '/about',
