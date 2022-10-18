@@ -361,7 +361,6 @@ export default {
           break;
         case "sewage":
           obj.forEach( val => {
-            console.log(val.id)
             this.selectMapPoint[1].points.push({point:[val.lng, val.lat],id:val.id});
           })
           break;
