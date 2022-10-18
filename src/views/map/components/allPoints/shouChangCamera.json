@@ -1,0 +1,92 @@
+{"Version":"V9.3.7","Type":1,"ObjItems":[
+  {"Type":7,"ObjID":1372482597,"ParentID":838283946,"SrvID":"3943547448616373533","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点1","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.433090,"Lng":119.261605,"Gcj02":1,"Altitude":32,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":1966676730,"ParentID":838283946,"SrvID":"3469592303961652978","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点2","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.417149,"Lng":119.255461,"Gcj02":1,"Altitude":35,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":590167824,"ParentID":838283946,"SrvID":"867638680984548982","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点3","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.416005,"Lng":119.252457,"Gcj02":1,"Altitude":34,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":2052477735,"ParentID":838283946,"SrvID":"2542521219595689606","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点4","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.385977,"Lng":119.242674,"Gcj02":1,"Altitude":41,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":141171761,"ParentID":838283946,"SrvID":"3502717341477934120","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点5","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.353662,"Lng":119.219950,"Gcj02":1,"Altitude":51,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":930916907,"ParentID":838283946,"SrvID":"2815393643064766655","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点6","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.354102,"Lng":119.212194,"Gcj02":1,"Altitude":50,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":1046835566,"ParentID":838283946,"SrvID":"495381095551273408","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点7","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.330898,"Lng":119.180417,"Gcj02":1,"Altitude":54,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":788506379,"ParentID":838283946,"SrvID":"1957865498374035932","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点8","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.308253,"Lng":119.124161,"Gcj02":1,"Altitude":71,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":813222966,"ParentID":838283946,"SrvID":"7063158221220504303","tmModify":"2022/09/02 15:38:09","Object":
+      {"Name":"点9","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.307935,"Lng":119.118522,"Gcj02":1,"Altitude":73,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":25,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }]
+}

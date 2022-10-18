@@ -2,6 +2,29 @@
   <div class="sanWei">
     <!-- 天地图demo -->
     <div id="cesiumContainer" class="map"></div>
+    <div class="selectCon">
+      <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;" @change.native="switchTab">
+        <el-radio-button label="s">寿昌江</el-radio-button>
+        <el-radio-button label="w">乌龙溪</el-radio-button>
+        <el-radio-button label="l">涝村溪</el-radio-button>
+      </el-radio-group>
+    </div>
+    <!-- 视频弹窗 -->
+		<div class="videoCon" v-if="isVideo">
+      <div class="close"><i class="el-icon-close pointer" @click="isVideo = false"></i></div>
+      <video :preload="preload" height="150px" width="260px" align="center" :controls="true"  :autoplay="autoplay">
+          <source :src="videoSrc" type="video/mp4">
+      </video>
+    </div>
+    <!-- 信息筛选 -->
+    <div class="infoCon">
+      <el-checkbox-group v-model="type" size="medium" @change="selectTypeFunc">
+        <el-checkbox v-for="(item,i) in selectMapPoint" :key="i" :label="item.text" name="type">
+          <span class="icon"><img :src="item.icon" alt=""></span>
+          <span>{{item.text}}</span>
+        </el-checkbox>
+      </el-checkbox-group>
+    </div>
   </div>
 </template>
 
@@ -21,6 +44,12 @@ import wulong from './components/wulong.json'; // 乌龙江
 import laocun from './components/laocun.json'; // 涝村江
 //引入绘制面point
 import areaPoints from './components/allPoints/area.json';
+//视频监控点
+import laoXiCamera from './components/allPoints/laoXiCamera.json';
+import shouChangCamera from './components/allPoints/shouChangCamera.json';
+import wuLongCamera from './components/allPoints/wuLongCamera.json';
+//污水处理厂数据
+import sewage from './components/allPoints/sewage.json';
 export default {
   name: "tianDiView",
   data() {
@@ -30,38 +59,94 @@ export default {
       subdomains:['0','1','2','3','4','5','6','7'],
       viewer:"",
       Cesium:'',
-      shouchang:[],
-      pointsOne:[],
-      pointsTwo:[],
-      pointsThree:[],
-      pointsFour:[],
-      pointsFive:[],
-      pointsSix:[],
-      pointsSeven:[],
-      pointsEight:[],
-      wulong:[],
-      laocun:[],
       areaPoints:[],
+      allPoint:[],
+      tabPosition:'s',
+      cameraObj:[
+        {cameraPoints:[]},//劳溪
+        {cameraPoints:[]},//寿昌
+        {cameraPoints:[]},//乌龙
+      ],
+      videoSrc:"https://zjlianweihoss.oss-cn-hangzhou.aliyuncs.com/file/1663655544809-city.mp4",
+      preload: 'auto', //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+      controls: true, // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
+      autoplay: '',
+      isVideo:false,
+      type:[],
+      selectMapPoint:[
+        {text:"流域基础信息",icon:require('./components/Icon/point.png'),state:false,points:[]},
+        {text:"污水处理厂",icon:require('./components/Icon/point.png'),state:false,points:[]},
+        {text:"视频监控",icon:require('./components/Icon/camera.png'),state:false,points:[]},
+      ],
     }
   },
   mounted(){
     this.lngLatPoint('sc',shoucang.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsOne',pointsOne.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsTwo',pointsTwo.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsThree',pointsThree.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsFour',pointsFour.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsFive',pointsFive.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsSix',pointsSix.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsSeven',pointsSeven.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('pointsEight',pointsEight.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsOne.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsTwo.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsThree.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsFour.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsFive.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsSix.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsSeven.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.lngLatPoint('min',pointsEight.ObjItems[0].Object.ObjectDetail.Latlng);
     this.lngLatPoint('wulong',wulong.ObjItems[0].Object.ObjectDetail.Latlng);
     this.lngLatPoint('laocun',laocun.ObjItems[0].Object.ObjectDetail.Latlng);
     this.lngLatPoint('areaPoints',areaPoints.ObjItems[0].Object.ObjectDetail.Latlng);
+    this.cameraPointsFunc('sewage',sewage.ObjItems);
+    this.cameraPointsFunc("lx",laoXiCamera.ObjItems);
+    this.cameraPointsFunc("sc",shouChangCamera.ObjItems);
+    this.cameraPointsFunc("wl",wuLongCamera.ObjItems);
     this.maoInit();
+    // 
+    //图标点击事件
+    var handler = new this.cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    handler.setInputAction((click) => {
+      var pick = this.viewer.scene.pick(click.position);
+      //选中某模型   pick选中的对象
+      console.log(pick)
+      if(pick && pick.id){
+        // alert(pick.id._code);
+        this.isVideo = true;
+      }
+    }, this.cesium.ScreenSpaceEventType.LEFT_CLICK  );
+
+    //视频监控点位
+    this.cameraObj.forEach(item => {
+      item.cameraPoints.forEach( val => {
+        this.selectMapPoint[2].points.push({point:[val.lng, val.lat],id:val.id});
+      })
+    });
   },
   methods: {
+    //选中触发事件
+    selectTypeFunc(){
+      this.selectMapPoint.forEach(item => {
+        item.state = false;
+        this.type.forEach(val => {
+          if(item.text == val){
+            item.state = true;
+          }
+        })
+        if(item.state){
+          if(item.points.length != 0){
+            item.points.forEach(val => {
+              var i = this.viewer.entities.getById(val.id);
+              this.viewer.entities.remove(i);
+              this.addIconMarker([val.point[0], val.point[1]],val.id,item.text);
+            })
+          }
+          return;
+        }
+        if(item.points.length != 0){
+          item.points.forEach((el,i) => {
+            var i = this.viewer.entities.getById(el.id);
+            this.viewer.entities.remove(i);
+          })
+        }
+      })
+    },
     maoInit(){
-      const _that = this;
       let Cesium = this.cesium;
       Cesium.Ion.defaultAccessToken = this.cesiumAsset;
       this.viewer = new Cesium.Viewer('cesiumContainer',{
@@ -101,7 +186,7 @@ export default {
 
       // 将三维球定位到中国 17850000
       this.viewer.camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(119.224120, 29.360818, 100000),
+          destination: Cesium.Cartesian3.fromDegrees(119.224120, 29.360818, 60000),
           orientation: {
               heading :  Cesium.Math.toRadians(348.4202942851978),
               pitch : Cesium.Math.toRadians(-89.74026687972041),
@@ -109,87 +194,115 @@ export default {
           },
           complete:function callback() {
               // 定位完成之后的回调函数
-              console.log("中国")
-              // _that.load();
-            
+              // console.log("中国")
           }
       });
-      // this.viewer.entities.add({
-      //   polyline: {
-      //     // fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
-      //     positions: Cesium.Cartesian3.fromDegreesArray(this.shouchang),
-      //     // 宽度
-      //     width: 2,
-      //     // 线的颜色
-      //     material: Cesium.Color.WHITE,
-      //     // 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
-      //     zIndex: 10,
-      //     // 是否显示
-      //     show: true
-      //   }
-      // });
-      // this.viewer.entities.add({
-      //   polyline: {
-      //     // fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
-      //     positions: Cesium.Cartesian3.fromDegreesArray(this.pointsOne),
-      //     // 宽度
-      //     width: 2,
-      //     // 线的颜色
-      //     material: Cesium.Color.WHITE,
-      //     // 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
-      //     zIndex: 10,
-      //     // 是否显示
-      //     show: true
-      //   }
-      // });
-      this.paintingLine(this.shouchang,5);
-      this.paintingLine(this.wulong,3);
-      this.paintingLine(this.laocun,3);
-      this.paintingLine(this.pointsOne,1);
-      this.paintingLine(this.pointsTwo,1);
-      this.paintingLine(this.pointsThree,1);
-      this.paintingLine(this.pointsFour,1);
-      this.paintingLine(this.pointsFive,1);
-      this.paintingLine(this.pointsSix,5);
-      this.paintingLine(this.pointsSeven,1);
-      this.paintingLine(this.pointsEight,1);
-      this.paintingLine(this.areaPoints,8);
-      // Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
-      // const viewer = new Cesium.Viewer('cesiumContainer', {
-      // selectionIndicator: false,
-      //   infoBox: false,
-      //   animation: false,
-      //   baseLayerPicker: false,
-      //   timeline: false,
-      //   geocoder: false,
-      //   homeButton: false,
-      //   sceneModePicker: false,
-      //   navigationHelpButton: false,
-      //   orderIndependentTranslucency: false,
-      //   contextOptions: {
-      //     webgl: {
-      //       alpha: true,
-      //       preserveDrawingBuffer: true
-      //     }
-      //   },
-      // });
-
-      // viewer._cesiumWidget._creditContainer.style.display = "none";// 隐藏版权
+      this.initLineFunc();
+      this.switchTab();
+    },
+    
+    addIconMarker(position,id,type) {
+      let Cesium = this.cesium;
+      this.viewer.entities.add({
+        name: "",
+        id: id,
+        position: Cesium.Cartesian3.fromDegrees(position[0], position[1], 70.79132996761848),
+        billboard: {
+          image: type == '视频监控' ? require('./components/Icon/camera.png') : require('./components/Icon/point.png'),
+          scale: 0.1,
+          verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+          pixelOffset : new Cesium.Cartesian2( 0, 10 ),   //偏移量
+          disableDepthTestDistance: Number.POSITIVE_INFINITY,
+          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+        },
+      });
+    },
+    
+    //河流切换
+    switchTab(){
+      this.viewer.entities.removeAll();//删除所有
+      this.initLineFunc();
+      var sc = [],wulong = [],laocun =[];
+      this.allPoint.forEach(item => {
+        switch(item.name){
+          case "sc":
+            sc  = item.data;
+            break;
+          case "wulong":
+            wulong = item.data;
+            break;
+          case "laocun":
+            laocun = item.data;
+            break;
+        }
+      })
+      switch(this.tabPosition){
+        case "s":
+          this.paintingLine("s",sc,5,new this.cesium.Color.fromCssColorString('#27a531'));
+          break;
+        case "l":
+          this.paintingLine("l",wulong,4,new this.cesium.Color.fromCssColorString('#27a531'));
+          break;
+        case "w":
+          this.paintingLine("w",laocun,4,new this.cesium.Color.fromCssColorString('#27a531'));
+          break;
+      }
+      // this.selectTypeFunc();
+    },
+    initLineFunc(){
+      let Cesium = this.cesium;
+      this.allPoint.forEach(item => {
+        if(item.name == "min"){
+          this.paintingLine(item.name,item.data,1,new Cesium.Color.fromCssColorString('#1D8FE1'));
+        }else if(item.name == "sc"){
+          this.paintingLine(item.name,item.data,5,new Cesium.Color.fromCssColorString('#1D8FE1'));
+        }else{
+          this.paintingLine(item.name,item.data,3,new Cesium.Color.fromCssColorString('#1D8FE1'));
+        }
+      })
+      this.paintingArea(this.areaPoints);
     },
     //划线
-    paintingLine(data,wid){
+    paintingLine(ids,data,wid,color){
+      this.viewer.entities.add({
+        // id:ids,
+        polyline: {
+          positions: this.cesium.Cartesian3.fromDegreesArray(data),// fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
+          width: wid, // 宽度
+          material:color,// 线的颜色
+          zIndex: 10,// 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
+          show: true// 是否显示
+        }
+      });
+      this.viewer.entities._id = ids;
+    },
+    //外围线
+    paintingArea(data){
       this.viewer.entities.add({
         polyline: {
-          // fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
-          positions: this.cesium.Cartesian3.fromDegreesArray(data),
-          // 宽度
-          width: wid,
-          // 线的颜色
-          material: this.cesium.Color.WHITE,
-          // 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
-          zIndex: 10,
-          // 是否显示
-          show: true
+          positions: this.cesium.Cartesian3.fromDegreesArray(data),// fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
+          width: 10, // 宽度
+          material: new this.cesium.Color.fromCssColorString('#23624b').withAlpha(0.3), // 线的颜色
+          zIndex: 20,// 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
+          show: true // 是否显示
+        }
+      });
+      this.viewer.entities.add({
+        polyline: {
+          positions: this.cesium.Cartesian3.fromDegreesArray(data),// fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
+          width: 7,// 宽度
+          material:new this.cesium.Color.fromCssColorString('#23624b').withAlpha(0.2),// 线的颜色
+          zIndex: 15,// 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
+          show: true // 是否显示
+        }
+      });
+      this.viewer.entities.add({
+        polyline: {
+          positions: this.cesium.Cartesian3.fromDegreesArray(data),// fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
+          width: 4,// 宽度
+          material:new this.cesium.Color.fromCssColorString('#23624b').withAlpha(0.9),// 线的颜色
+          zIndex: 2,// 线的顺序,仅当`clampToGround`为true并且支持地形上的折线时才有效。
+          show: true // 是否显示
         }
       });
     },
@@ -207,98 +320,13 @@ export default {
             arrJ.push(item);
           }
       })
-      switch(type){
-        case "sc":
-          this.shouchang = obj;
-          break;
-        case "pointsOne":
-          this.pointsOne = obj;
-          break;
-        case "pointsTwo":
-          this.pointsTwo = obj;
-          break;
-        case "pointsThree":
-          this.pointsThree = obj;
-          break;
-        case "pointsFour":
-          this.pointsFour = obj;
-          break;
-        case "pointsFive":
-          this.pointsFive = obj;
-          break;
-        case "pointsSix":
-          this.pointsSix = obj;
-          break;
-        case "pointsSeven":
-          this.pointsSeven = obj;
-          break;
-        case "pointsEight":
-          this.pointsEight = obj;
-          break;
-        case "wulong":
-          this.wulong = obj;
-          break;
-        case "laocun":
-          this.laocun = obj;
-          break;
-        case "areaPoints":
-          this.areaPoints = obj;
-          break;
+      if(type != "areaPoints"){
+        this.allPoint.push({name:type,data:obj});
+      }else{
+        this.areaPoints = obj;
       }
     },
      
-    aryJoinAry(ary,ary2) {
-      var minLength;
-      let itemArys = [];
-      let itemAry = [];
-      //先拿到两个数组中长度较短的那个数组的长度
-      if(ary.length>ary2.length){
-          minLength=ary2.length;
-      }
-      else{
-          minLength=ary.length;
-      }
-      //将两个数组中较长的数组记录下来
-      var longAry=arguments[0].length>arguments[1].length?arguments[0]:arguments[1];
-      //循环范围为较短的那个数组的长度
-      for (var i = 0; i < minLength; i++) {
-          //将数组放入临时数组中
-          itemAry.push(ary[i]);
-          itemAry.push(ary2[i])
-      }
-      itemArys.push(itemAry.concat(longAry.slice(minLength)))
-
-      //itemAry和多余的新数组拼接起来并返回。
-      return itemAry.concat(longAry.slice(minLength));
-    },
-    load() {
-      console.log("加载绘画数据")
-      // let imageURL = "http://t0.tianditu.gov.cn/img_w/wmts?" + "SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" + "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=13279a30017fa4105bcd5315ccd135d9";
-      // //创建自定义图层对象
-      // let lay = new window.T.TileLayer(imageURL, {minZoom: 1, maxZoom: 18});
-      // let config = {layers: [lay]};
-      // //初始化地图对象
-      // this.map = new window.T.Map("mapWorld", config);
-      //绘制区域面
-      this.drawSurface(areaPoints.ObjItems[0].Object.ObjectDetail.Latlng);
-
-      //添加溪流
-      this.initSurface("line",pointsOne.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsTwo.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsThree.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsFour.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsFive.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsSix.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsSeven.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",pointsEight.ObjItems[0].Object.ObjectDetail.Latlng,1,"#1D8FE1");
-      this.initSurface("line",shoucang.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE5");
-      this.initSurface("line",wulong.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE1");
-      this.initSurface("line",laocun.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE1");
-      //设置显示地图的中心点和级别
-      // this.map.centerAndZoom(new window.T.LngLat(119.224120, 29.360818), 12);
-      //允许鼠标滚轮缩放地图
-      this.map.enableScrollWheelZoom();
-    },
     // 经纬度转天地图纬度
     gaoDtMap(gd_lon,gd_lat) {
       var PI = 3.14159265358979324 * 3000.0 / 180.0;
@@ -312,83 +340,32 @@ export default {
         dt_lat: dt_lat
       };
     },
-    // 河流
-    initSurface(type,arr,wid,color) {
-      let obj = [], lng,lat;
-      arr.forEach((item,i) => {
-        if(i%2){
-          lng = item;
-          // const { dt_lng,dt_lat } = this.gaoDeToBaidu(lng,lat);
-          // obj.push(new window.T.Polyline(dt_lng,dt_lat));
-          const { dt_lng,dt_lat } = this.gaoDtMap(lng,lat);
-          obj.push(new window.T.LngLat(dt_lng,dt_lat));
-          // obj.push(new window.T.LngLat(lng,lat));
-        }else{
-          lat = item;
-        }
+    //监控点经纬度数据处理
+    cameraPointsFunc(type,data){
+      let obj = [];
+      data.forEach((item,i)=>{
+        let lng = item.Object.ObjectDetail.Lng;
+        let lat = item.Object.ObjectDetail.Lat;
+        const { dt_lng,dt_lat } = this.gaoDtMap(lng,lat);
+        obj.push({lng:dt_lng,lat:dt_lat,id:type + "_"+i});
       })
-      let line = new window.T.Polyline(obj, {
-          color: color,
-          weight: wid,
-          opacity: 0.8,
-          fillColor: "#FFFFFF",
-          fillOpacity: 0.9
-      });
-      this.map.addOverLay(line);
-    },
-    //绘制面
-    drawSurface(arr){
-      let obj = [], lng,lat;
-      arr.forEach((item,i) => {
-        if(i%2){
-          lng = item;
-          const { dt_lng,dt_lat } = this.gaoDtMap(lng,lat);
-          obj.push(new window.T.LngLat(dt_lng,dt_lat));
-        }else{
-          lat = item;
-        }
-      })
-      // 边界线
-      // eslint-disable-next-line no-undef
-      var border = new window.T.Polyline(obj, {
-        color: '#22E1FF',
-        weight: 25,
-        opacity: 0.3,
-      });
-      this.map.addOverLay(border);
-      
-      // eslint-disable-next-line no-undef
-      var border1 = new window.T.Polyline(obj, {
-        color: '#1D8FE1',
-        weight: 20,
-        opacity: 0.2,
-      });
-      this.map.addOverLay(border1);
-
-      // eslint-disable-next-line no-undef
-      var border2 = new window.T.Polyline(obj, {
-        color: '#1D8FE1',
-        weight: 10,
-        opacity: 0.9,
-      });
-      this.map.addOverLay(border2);
-    },
-    switchTab(){
-      this.initSurface("line",shoucang.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE5");
-      this.initSurface("line",wulong.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE1");
-      this.initSurface("line",laocun.ObjItems[0].Object.ObjectDetail.Latlng,5,"#1D8FE1");
-      switch(this.tabPosition){
-        case "s":
-          this.initSurface("line",shoucang.ObjItems[0].Object.ObjectDetail.Latlng,5,"red");
+      switch(type){
+        case "lx":
+          this.cameraObj[0].cameraPoints = obj;
           break;
-        case "l":
-          this.initSurface("line",laocun.ObjItems[0].Object.ObjectDetail.Latlng,5,"red");
+        case "sc":
+          this.cameraObj[1].cameraPoints = obj;
           break;
-        case "w":
-          this.initSurface("line",wulong.ObjItems[0].Object.ObjectDetail.Latlng,5,"red");
+        case "wl":
+          this.cameraObj[2].cameraPoints = obj;
+          break;
+        case "sewage":
+          obj.forEach( val => {
+            console.log(val.id)
+            this.selectMapPoint[1].points.push({point:[val.lng, val.lat],id:val.id});
+          })
           break;
       }
-      
     },
   }
 }
@@ -404,5 +381,64 @@ export default {
     height: 100%;
     background-color: aquamarine;
   }
+  .selectCon{
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width: 280px;
+    z-index: 10010;
+  }
+  .videoCon{
+    position: absolute;
+    top: 10%;
+    width: 50%;
+    height: 60%;
+    background: white;
+    left: 25%;
+    video{
+      width: 100%;
+      height: 93%;
+    }
+    .close{
+      text-align: right;
+      font-size: 30px;
+      font-weight: bold;
+    }
+  }
+  .infoCon{
+    position: absolute;
+    bottom: 50px;
+    right: 25%;
+    width: 200px;
+    // height: 400px;
+    font-size: 22px;
+    background: #1d8fe163;
+    padding: 10px 20px;
+    .icon{
+      width: 20px;
+      height: 20px;
+      img{
+        width: 20px;
+        height: 15px;
+      }
+    }
+  }
+}
+:deep(.el-checkbox__label){
+  font-size: 18px;
+  color: aliceblue;
+}
+:deep(.el-checkbox__inner){
+  width: 18px;
+  height: 18px;
+}
+:deep(.el-checkbox){
+  float: left;
+  height: 30px;
+  line-height: 30px;
+}
+:deep(.el-checkbox__inner::after){
+  width: 6px !important;
+  height: 10px !important;
 }
 </style>

@@ -1,0 +1,22 @@
+{"Version":"V9.3.7","Type":1,"ObjItems":[
+  {"Type":7,"ObjID":869263509,"ParentID":629785899,"SrvID":"3560471178971153285","tmModify":"2022/09/01 14:43:03","Object":
+      {"Name":"寿昌污水处理厂","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.380801,"Lng":119.229242,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/09/01 14:43:08","SignPic":
+              {"SignPic":151,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":365902248,"ParentID":629785899,"SrvID":"7167102606114596280","tmModify":"2022/09/01 14:50:29","Object":
+      {"Name":"大同污水处理厂","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.306844,"Lng":119.122328,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/09/01 14:50:42","SignPic":
+              {"SignPic":151,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }]
+}

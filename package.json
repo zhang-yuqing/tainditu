@@ -10,9 +10,10 @@
   "dependencies": {
     "cesium": "^1.98.1",
     "core-js": "^3.8.3",
-    "element-ui": "^2.15.10",
+    "element-ui": "^2.14.1",
     "less-loader": "^11.1.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
+    "video.js": "^7.20.3",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
