@@ -151,13 +151,13 @@ export default {
       Cesium.Ion.defaultAccessToken = this.cesiumAsset;
       this.viewer = new Cesium.Viewer('cesiumContainer',{
         animation:false,       //动画
-        homeButton:true,       //home键
-        geocoder:true,         //地址编码
+        homeButton:false,       //home键
+        geocoder:false,         //地址编码
         baseLayerPicker:false, //图层选择控件
         timeline:false,        //时间轴
         fullscreenButton:true, //全屏显示
-        infoBox:true,         //点击要素之后浮窗
-        sceneModePicker:true,  //投影方式  三维/二维
+        infoBox:false,         //点击要素之后浮窗
+        sceneModePicker:false,  //投影方式  三维/二维
         navigationInstructionsInitiallyVisible:false, //导航指令
         navigationHelpButton:false,     //帮助信息
         selectionIndicator:false, // 选择
