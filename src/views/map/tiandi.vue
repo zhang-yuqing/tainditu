@@ -4,9 +4,9 @@
     <div id="cesiumContainer" class="map"></div>
     <div class="selectCon">
       <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;" @change.native="switchTab">
-        <el-radio-button label="s">寿昌江</el-radio-button>
-        <el-radio-button label="w">乌龙溪</el-radio-button>
-        <el-radio-button label="l">涝村溪</el-radio-button>
+        <el-radio-button label="sc">寿昌江</el-radio-button>
+        <el-radio-button label="wulong">乌龙溪</el-radio-button>
+        <el-radio-button label="laocun">涝村溪</el-radio-button>
       </el-radio-group>
     </div>
     <!-- 视频弹窗 -->
@@ -24,6 +24,10 @@
           <span>{{item.text}}</span>
         </el-checkbox>
       </el-checkbox-group>
+    </div>
+    <div class="textInfo" v-if="isShowInfo">
+      <div class="close"><i class="el-icon-close pointer" @click="isShowInfo = false"></i></div>
+      信息弹框
     </div>
   </div>
 </template>
@@ -50,6 +54,10 @@ import shouChangCamera from './components/allPoints/shouChangCamera.json';
 import wuLongCamera from './components/allPoints/wuLongCamera.json';
 //污水处理厂数据
 import sewage from './components/allPoints/sewage.json';
+//流域基础信息和大同镇、航头镇、寿昌镇
+import daTongZhen from './components/areaPoints/datongzhen.json';
+import hangTouZhen from './components/areaPoints/hangtouzhen.json';
+import shouChangZhen from './components/areaPoints/shouchang.json';
 export default {
   name: "tianDiView",
   data() {
@@ -61,7 +69,7 @@ export default {
       Cesium:'',
       areaPoints:[],
       allPoint:[],
-      tabPosition:'s',
+      tabPosition:'sc',
       cameraObj:[
         {cameraPoints:[]},//劳溪
         {cameraPoints:[]},//寿昌
@@ -72,31 +80,18 @@ export default {
       controls: true, // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
       autoplay: '',
       isVideo:false,
+      isShowInfo:false,
       type:[],
       selectMapPoint:[
         {text:"流域基础信息",icon:require('./components/Icon/point.png'),state:false,points:[]},
         {text:"污水处理厂",icon:require('./components/Icon/point.png'),state:false,points:[]},
         {text:"视频监控",icon:require('./components/Icon/camera.png'),state:false,points:[]},
       ],
+      basicInfo:[],
     }
   },
   mounted(){
-    this.lngLatPoint('sc',shoucang.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsOne.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsTwo.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsThree.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsFour.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsFive.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsSix.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsSeven.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('min',pointsEight.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('wulong',wulong.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('laocun',laocun.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.lngLatPoint('areaPoints',areaPoints.ObjItems[0].Object.ObjectDetail.Latlng);
-    this.cameraPointsFunc('sewage',sewage.ObjItems);
-    this.cameraPointsFunc("lx",laoXiCamera.ObjItems);
-    this.cameraPointsFunc("sc",shouChangCamera.ObjItems);
-    this.cameraPointsFunc("wl",wuLongCamera.ObjItems);
+    this.initPointFunc();
     this.maoInit();
     // 
     //图标点击事件
@@ -107,7 +102,9 @@ export default {
       console.log(pick)
       if(pick && pick.id){
         // alert(pick.id._code);
-        this.isVideo = true;
+        console.log(pick.id._id)
+        if(pick.id._id.indexOf('sc_') == 0 || pick.id._id.indexOf('wl_') == 0 || pick.id._id.indexOf('lx_') == 0) this.isVideo = true;
+        if(pick.id._id.indexOf('sewage_') == 0) console.log(11111111), this.isShowInfo = true;
       }
     }, this.cesium.ScreenSpaceEventType.LEFT_CLICK  );
 
@@ -117,34 +114,89 @@ export default {
         this.selectMapPoint[2].points.push({point:[val.lng, val.lat],id:val.id});
       })
     });
+
+    // 鼠标移入自定义弹出框
+    // var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+    handler.setInputAction((movement) =>{
+        let haveEn = this.viewer.scene.pick(movement.endPosition);
+        haveEn == undefined ? "" : this.isShowAreaScopeInfo(haveEn.id._id);
+        // if(viewer.scene.pickPositionSupported && Cesium.defined(haveEn) && haveEn.id !== ' '){
+        //     clearAlpha();
+        //     if(haveEn.id.polygon !== undefined){
+        //         var haveEnsNow = haveEn.id.polygon._material._color.getValue();
+        //         haveEnsNow.alpha = 1;
+        //         haveEn.id.polygon._material._color.setValue(haveEnsNow);
+        //     }
+        // }
+    },this.cesium.ScreenSpaceEventType.MOUSE_MOVE);
   },
   methods: {
+    //加载并初始化point
+    initPointFunc(){
+      this.lngLatPoint('sc',shoucang.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsOne.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsTwo.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsThree.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsFour.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsFive.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsSix.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsSeven.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('min',pointsEight.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('wulong',wulong.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('laocun',laocun.ObjItems[0].Object.ObjectDetail.Latlng);
+      this.lngLatPoint('areaPoints',areaPoints.ObjItems[0].Object.ObjectDetail.Latlng);
+      // 勾选区域
+      this.lngLatPoint('daTongZhen',daTongZhen.ObjItems[0].Object.ObjectDetail.Latlng,new this.cesium.Color.fromCssColorString('#e02433').withAlpha(0.5),"大同镇");
+      this.lngLatPoint('hangTouZhen',hangTouZhen.ObjItems[0].Object.ObjectDetail.Latlng,new this.cesium.Color.fromCssColorString('#24bde0').withAlpha(0.5),"航头镇");
+      this.lngLatPoint('shouChangZhen',shouChangZhen.ObjItems[0].Object.ObjectDetail.Latlng,new this.cesium.Color.fromCssColorString('#e0c024').withAlpha(0.5),"寿昌镇");
+      this.cameraPointsFunc('sewage',sewage.ObjItems);
+      this.cameraPointsFunc("lx",laoXiCamera.ObjItems);
+      this.cameraPointsFunc("sc",shouChangCamera.ObjItems);
+      this.cameraPointsFunc("wl",wuLongCamera.ObjItems);
+    },
+    //鼠标移入显示的信息
+    isShowAreaScopeInfo(id){
+      if(id == "daTongZhen" || id == "hangTouZhen" ||id == "shouChangZhen"){
+        console.log("显示"+id+"信息")
+      }
+    },
     //选中触发事件
     selectTypeFunc(){
       this.selectMapPoint.forEach(item => {
         item.state = false;
-        this.type.forEach(val => {
-          if(item.text == val){
-            item.state = true;
+        if(item.text !== "流域基础信息"){
+          this.type.forEach(val => {
+            if(item.text == val){
+              item.state = true;
+            }
+          })
+          if(item.state){
+            if(item.points.length != 0){
+              item.points.forEach(val => {
+                var ids = this.viewer.entities.getById(val.id);
+                this.viewer.entities.remove(ids);
+                this.addIconMarker([val.point[0], val.point[1]],val.id,item.text);
+              })
+            }
+            return;
           }
-        })
-        if(item.state){
           if(item.points.length != 0){
-            item.points.forEach(val => {
-              var i = this.viewer.entities.getById(val.id);
-              this.viewer.entities.remove(i);
-              this.addIconMarker([val.point[0], val.point[1]],val.id,item.text);
+            item.points.forEach((temp) => {
+              var ids = this.viewer.entities.getById(temp.id);
+              this.viewer.entities.remove(ids);
             })
           }
-          return;
-        }
-        if(item.points.length != 0){
-          item.points.forEach((el,i) => {
-            var i = this.viewer.entities.getById(el.id);
-            this.viewer.entities.remove(i);
-          })
         }
       })
+      //基本信息面积覆盖
+      if(this.type.includes('流域基础信息')){
+        this.addScope();
+      }else{
+        this.basicInfo.forEach(item => {
+          var tempId = this.viewer.entities.getById(item.id);
+          this.viewer.entities.remove(tempId);
+        })
+      };
     },
     maoInit(){
       let Cesium = this.cesium;
@@ -161,6 +213,8 @@ export default {
         navigationInstructionsInitiallyVisible:false, //导航指令
         navigationHelpButton:false,     //帮助信息
         selectionIndicator:false, // 选择
+        scene3DOnly: true,              // 每个几何实例将只能以3D渲染以节省GPU内存
+        sceneMode: 3,                   // 初始场景模式 1 2D模式 2 2D循环模式 3 3D模式  Cesium.SceneMode
         imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
           //影像底图
           url: "http://t{s}.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk="+this.tiandituTk,
@@ -211,7 +265,7 @@ export default {
           image: type == '视频监控' ? require('./components/Icon/camera.png') : require('./components/Icon/point.png'),
           scale: 0.1,
           verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-          pixelOffset : new Cesium.Cartesian2( 0, 10 ),   //偏移量
+          pixelOffset : new Cesium.Cartesian3( 0, 10 ),   //偏移量
           disableDepthTestDistance: Number.POSITIVE_INFINITY,
           heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         },
@@ -220,40 +274,27 @@ export default {
     
     //河流切换
     switchTab(){
-      this.viewer.entities.removeAll();//删除所有
-      this.initLineFunc();
-      var sc = [],wulong = [],laocun =[];
+      var arr=[];
       this.allPoint.forEach(item => {
-        switch(item.name){
-          case "sc":
-            sc  = item.data;
-            break;
-          case "wulong":
-            wulong = item.data;
-            break;
-          case "laocun":
-            laocun = item.data;
-            break;
+        if(item.name == "sc" || item.name == "wulong" || item.name == "laocun"){
+          arr.push({name:item.name,data:item.data});
         }
       })
-      switch(this.tabPosition){
-        case "s":
-          this.paintingLine("s",sc,5,new this.cesium.Color.fromCssColorString('#27a531'));
-          break;
-        case "l":
-          this.paintingLine("l",wulong,4,new this.cesium.Color.fromCssColorString('#27a531'));
-          break;
-        case "w":
-          this.paintingLine("w",laocun,4,new this.cesium.Color.fromCssColorString('#27a531'));
-          break;
-      }
+      arr.forEach(item => {
+        this.viewer.entities.remove(this.viewer.entities.getById(item.name));
+        if(item.name == this.tabPosition){
+          this.paintingLine(item.name,item.data,5,new this.cesium.Color.fromCssColorString('#27a531'));
+        }else{
+          this.paintingLine(item.name,item.data,4,new this.cesium.Color.fromCssColorString('#1D8FE1'));
+        }
+      })
       // this.selectTypeFunc();
     },
     initLineFunc(){
       let Cesium = this.cesium;
-      this.allPoint.forEach(item => {
+      this.allPoint.forEach((item,i) => {
         if(item.name == "min"){
-          this.paintingLine(item.name,item.data,1,new Cesium.Color.fromCssColorString('#1D8FE1'));
+          this.paintingLine(item.name+'_'+i,item.data,1,new Cesium.Color.fromCssColorString('#1D8FE1'));
         }else if(item.name == "sc"){
           this.paintingLine(item.name,item.data,5,new Cesium.Color.fromCssColorString('#1D8FE1'));
         }else{
@@ -261,11 +302,51 @@ export default {
         }
       })
       this.paintingArea(this.areaPoints);
+      
+
     },
+    addScope(){
+      this.basicInfo.forEach(item => {
+        this.setAreaScope(item.id,item.data,item.areaColor,item.name)
+      })
+    },
+    // 设置区域范围
+    setAreaScope(id,data,areaColor,name){
+      let redPolygon = this.viewer.entities.add({
+        id:id,
+        name : 'Wyoming',
+        polygon : {
+          hierarchy:this.cesium.Cartesian3.fromDegreesArray(data),
+          height : 0,
+          material : areaColor,
+          outline : true,
+          outlineColor : this.cesium.Color.BLACK
+        }
+      });
+      let polyPositions = redPolygon.polygon.hierarchy.getValue(this.cesium.JulianDate.now()).positions;
+      let polyCenter = this.cesium.BoundingSphere.fromPoints(polyPositions).center;//中心点
+      polyCenter = this.cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(polyCenter);
+      redPolygon.position = polyCenter;
+      redPolygon.label={
+          // position:
+          text:name,
+          color : this.cesium.Color.fromCssColorString('#000'),
+          font:'32px',
+          showBackground : false,
+          scale : 1,
+          horizontalOrigin : this.cesium.HorizontalOrigin.CENTER,
+          verticalOrigin : this.cesium.VerticalOrigin.LEFT,
+          disableDepthTestDistance : 1000.0,
+          pixelOffset:new this.cesium.Cartesian3(60,50),
+          eyeOffset: new this.cesium.Cartesian3(0, 0, -550),
+      };
+      this.viewer.zoomTo(this.viewer.entities);
+    },
+    
     //划线
     paintingLine(ids,data,wid,color){
       this.viewer.entities.add({
-        // id:ids,
+        id:ids,
         polyline: {
           positions: this.cesium.Cartesian3.fromDegreesArray(data),// fromDegrees返回给定的经度和纬度值数组（以度为单位），该数组由Cartesian3位置组成。 
           width: wid, // 宽度
@@ -307,7 +388,7 @@ export default {
       });
     },
     //经纬度点
-    lngLatPoint(type,data){
+    lngLatPoint(type,data,color,name){
       let arrO = [], arrJ = [], lng,lat,obj=[];
       data.forEach((item,i)=>{
           if(i%2){
@@ -320,9 +401,13 @@ export default {
             arrJ.push(item);
           }
       })
+      if(type == "daTongZhen" || type == "hangTouZhen" || type == "shouChangZhen"){
+        this.basicInfo.push({id:type,data:obj,areaColor:color,name});
+        return;
+      }
       if(type != "areaPoints"){
         this.allPoint.push({name:type,data:obj});
-      }else{
+      }else {
         this.areaPoints = obj;
       }
     },
@@ -398,11 +483,7 @@ export default {
       width: 100%;
       height: 93%;
     }
-    .close{
-      text-align: right;
-      font-size: 30px;
-      font-weight: bold;
-    }
+    
   }
   .infoCon{
     position: absolute;
@@ -421,6 +502,19 @@ export default {
         height: 15px;
       }
     }
+  }
+  .textInfo{
+    position: absolute;
+    top: 150px;
+    left: 45%;
+    width: 200px;
+    height: 500px;
+    background-color: aquamarine;
+  }
+  .close{
+    text-align: right;
+    font-size: 30px;
+    font-weight: bold;
   }
 }
 :deep(.el-checkbox__label){
