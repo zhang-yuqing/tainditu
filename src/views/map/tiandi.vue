@@ -271,7 +271,38 @@ export default {
         },
       });
     },
-    
+     
+    //图层遮罩
+    initMask(){
+      let maskpointArray = this.basicInfo[0].data;
+      var maskspoint = this.cesium.Cartesian3.fromDegreesArray(maskpointArray)
+      const entity1 = new this.cesium.Entity({
+        id: 1,
+        polygon: {
+          hierarchy: {
+            // 绘制的区域太大容易卡顿
+            positions: this.cesium.Cartesian3.fromDegreesArray([100, 0, 100, 89, 150, 89, 150, 0]),
+            // holes是图形内需要挖空的区域
+            holes: [{
+              positions: maskspoint
+            }]
+          },
+          material: this.cesium.Color.fromCssColorString('#000').withAlpha(0.7)
+
+        }
+      })
+      const entity2 = new this.cesium.Entity({
+        id: 2,
+        polyline: {
+          positions: maskspoint,
+          width: 2,
+          material: this.cesium.Color.fromCssColorString('#000').withAlpha(0.5),
+        }
+      })
+      this.viewer.entities.add(entity1)
+      this.viewer.entities.add(entity2)
+    },
+
     //河流切换
     switchTab(){
       var arr=[];
