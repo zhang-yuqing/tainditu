@@ -1,0 +1,13 @@
+
+{"Version":"V9.3.0","Type":1,"ObjItems":[
+  {"Type":7,"ObjID":1227835428,"ParentID":1665778226,"SrvID":"1445938437535547829","tmModify":"2022/09/21 17:26:59","Object":
+      {"Name":"乌龙溪","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.325460,"Lng":119.177270,"Gcj02":1,"Altitude":60,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":117,"AlignFlag":0,"SignClr":0,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }]
+}

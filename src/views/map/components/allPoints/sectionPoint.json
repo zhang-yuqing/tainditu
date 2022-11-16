@@ -1,0 +1,42 @@
+{"Version":"V9.3.0","Type":1,"ObjItems":[
+  {"Type":7,"ObjID":722639969,"ParentID":1316061489,"SrvID":"7440518572362874476","tmModify":"2022/10/20 15:39:45","Object":
+      {"Name":"航头","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.331913,"Lng":119.187788,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/10/20 15:13:04","SignPic":
+              {"SignPic":53,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":456217765,"ParentID":1316061489,"SrvID":"5563856463682517251","tmModify":"2022/10/20 15:43:05","Object":
+      {"Name":"寿昌","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.359037,"Lng":119.228651,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/10/20 15:39:56","SignPic":
+              {"SignPic":53,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":1340838885,"ParentID":1316061489,"SrvID":"6829420140896335617","tmModify":"2022/10/20 15:40:22","Object":
+      {"Name":"更楼","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.423167,"Lng":119.257457,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/10/20 15:40:14","SignPic":
+              {"SignPic":53,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }
+  ,{"Type":7,"ObjID":1998689570,"ParentID":1316061489,"SrvID":"2830504563432588280","tmModify":"2022/10/20 15:40:49","Object":
+      {"Name":"源口","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.450548,"Lng":119.253941,"Gcj02":1,"Altitude":0,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"Time":"2022/10/20 15:40:38","SignPic":
+              {"SignPic":53,"AlignFlag":0,"SignClr":0,"PicScale":0,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }]
+}

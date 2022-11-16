@@ -1,0 +1,13 @@
+
+{"Version":"V9.3.0","Type":1,"ObjItems":[
+  {"Type":7,"ObjID":1028764720,"ParentID":1910947655,"SrvID":"5571046768358111305","tmModify":"2022/09/21 17:31:47","Object":
+      {"Name":"源口","Type":7,"Comment":"","ObjectDetail":
+          {"Lat":29.450639,"Lng":119.254209,"Gcj02":1,"Altitude":35,"EditMode":0,"OverlayIdx":0,"TxtType":1,"ShowLevel":1,"ShowLevelMax":0,"TimeUncertain":0,"SignEvent":
+              {"Radius":0,"ShowClr":0
+              },"SignPic":
+              {"SignPic":117,"AlignFlag":0,"SignClr":4286578943,"PicScale":10,"SignPicNum":0,"SignPicNumOffx":0,"SignPicNumOffy":0,"SignPicNumClr":0,"SignPicNumSize":0
+              },"TxtShowSta":0,"TxtShowStaSet":0
+      }
+  }
+  }]
+}
