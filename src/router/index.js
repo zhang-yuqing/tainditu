@@ -11,24 +11,36 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/tiandi',  //天地地图
-    name: 'tiandi',
-    component: () => import('../views/map/index.vue')
-  },
-  {
-    path: '/sanwei',
-    name: 'sanwei',
-    component: () => import('../views/map/sanwei.vue')
-  },
-  {
-    path: '/map',
-    name: 'map',
-    component: () => import('../views/map/tiandi.vue')
-  },
-  {
-    path: '/complete',
-    name: 'complete',
-    component: () => import('../views/map/completeTiandiView.vue')
+    path: '/home',
+    name: 'homeIndex',
+    component: () => import('../views/index.vue'),
+    children:[
+      {
+        path: '/tiandi',  //天地地图
+        name: 'tiandi',
+        component: () => import('../views/map/index.vue')
+      },
+      {
+        path: '/sanwei',
+        name: 'sanwei',
+        component: () => import('../views/map/sanwei.vue')
+      },
+      {
+        path: '/map', 
+        name: 'map',
+        component: () => import('../views/map/tiandi.vue')
+      },
+      {
+        path: '/complete',  //完整版天地图
+        name: 'complete',
+        component: () => import('../views/map/completeTiandiView.vue')
+      },
+      {
+        path: '/parameter',
+        name: 'parameter',
+        component: () => import('../views/demo/parameter.vue')
+      },
+    ],
   },
   {
     path: '/about',
@@ -37,7 +49,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+  },
+ 
 ]
 
 const router = new VueRouter({

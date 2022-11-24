@@ -4,6 +4,7 @@
     <el-tag type="success" @click="jump('/sanwei')">三维地图</el-tag>
     <el-tag type="info" @click="jump('/map')">勾选显示不同区域面三维地图</el-tag>
     <el-tag type="warning" @click="jump('/complete')">三维地图</el-tag>
+    <el-tag @click="jump('/parameter')">封装</el-tag>
   </div>
 </template>
 
