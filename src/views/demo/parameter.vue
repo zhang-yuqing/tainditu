@@ -13,7 +13,7 @@
       </el-form-item>
     </el-form> -->
     <FormTemp :formArr="formArr" :formObj="formObj" :rulesObj="rulesFrom" ref="ruleForm"></FormTemp>
-    <SubButtonTemp :btnObj="addBtnObj"></SubButtonTemp>
+    <SubButtonTemp :btnObj="addBtnObj" @addInfo="addInfo"></SubButtonTemp>
   </div>
 </template>
 <script>
@@ -315,7 +315,7 @@ export default{
         type:'sub',
       },
       addBtnObj:{
-        type:'cancel',
+        type:'add',
       }
     }
   },
@@ -337,6 +337,9 @@ export default{
   methods:{
     subFunc(){
       this.$refs.ruleForm.validateFun();
+    },
+    addInfo(){
+      console.log("添加按钮")
     }
   }
 }

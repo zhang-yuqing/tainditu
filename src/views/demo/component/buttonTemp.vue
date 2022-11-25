@@ -2,13 +2,13 @@
   <div class="butCon">
     <!--提交按钮-->
     <div v-if="btnObj.type === 'sub'"> 
-      <el-button type="info" class="btnStyle" size="small">取消</el-button> <el-button type="primary" class="btnStyle" size="small">确认</el-button>
+      <el-button type="info" class="btnStyle" size="small" @click="cancelFunc">取消</el-button> <el-button type="primary" class="btnStyle" size="small" @click="confirmFunc">确认</el-button>
     </div>
     <div v-if="btnObj.type === 'add'">
-      <el-button type="primary" :style="{width:btnObj.width != undefined ? btnObj.width+'px' : ''}" size="small">添加</el-button>
+      <el-button type="primary" :style="{width:btnObj.width != undefined ? btnObj.width+'px' : ''}" size="small" @click="addFunc">添加</el-button>
     </div>
     <div v-if="btnObj.type === 'cancel'">
-      <el-button type="info" :style="{width:btnObj.width != undefined ? btnObj.width+'px' : ''}" size="small">取消</el-button>
+      <el-button type="info" @click="cancelFunc" :style="{width:btnObj.width != undefined ? btnObj.width+'px' : ''}" size="small">取消</el-button>
     </div>
   </div>
 </template>
@@ -25,7 +25,15 @@ export default {
       require:true
     }
   },
-  methods: {}
+  methods: {
+    cancelFunc(){
+      console.log("取消")
+    },
+    confirmFunc(){},
+    addFunc(){
+      this.$emit('addInfo')
+    },
+  }
 }
 </script>
 
