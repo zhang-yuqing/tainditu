@@ -29,7 +29,9 @@ export default {
     cancelFunc(){
       console.log("取消")
     },
-    confirmFunc(){},
+    confirmFunc(){
+      this.$emit('addInfo')
+    },
     addFunc(){
       this.$emit('addInfo')
     },

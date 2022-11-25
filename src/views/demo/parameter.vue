@@ -13,7 +13,7 @@
       </el-form-item>
     </el-form> -->
     <FormTemp :formArr="formArr" :formObj="formObj" :rulesObj="rulesFrom" ref="ruleForm"></FormTemp>
-    <SubButtonTemp :btnObj="addBtnObj" @addInfo="addInfo"></SubButtonTemp>
+    <SubButtonTemp :btnObj="btnObj" @addInfo="addInfo"></SubButtonTemp>
   </div>
 </template>
 <script>
@@ -323,7 +323,7 @@ export default{
     FormTemp,
     SubButtonTemp
   },
-  created(){
+  mounted(){
     this.formArr[1].children = this.parameters.riverOption;
     this.formArr[2].children = this.parameters.seasonData;
     this.formArr[3].children = this.parameters.seasonData;
@@ -332,14 +332,13 @@ export default{
     this.formArr[6].columnData[1].children = this.parameters.seasonData;
     this.formArr[6].columnData[2].children = this.parameters.riverOption;
     this.formArr[6].columnData[3].children = this.parameters.seasonData;
-    console.log(this.parameters)
   },
   methods:{
     subFunc(){
       this.$refs.ruleForm.validateFun();
     },
     addInfo(){
-      console.log("添加按钮")
+      console.log("保存数据")
     }
   }
 }
