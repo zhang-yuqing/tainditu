@@ -202,9 +202,7 @@ export default {
       console.log(type,val)
     },
     validateFun() {
-      console.log(this.rulesObj)
       this.$refs.formInfo.validate((valid) => {
-        console.log(valid)
         this.validVal = valid;
         return valid;
       });
