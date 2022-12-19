@@ -12,18 +12,34 @@
         </el-select>
       </el-form-item>
     </el-form> -->
+    <el-cascader :options="areaData" :props="props" style="width: 100%" @change="provincesChange"></el-cascader>
+    <div class="area">地址
+      <el-select v-model="areaText" filterable class="w-100" @change="(e)=>{ selectChange(e) }">
+        <el-option v-for="(item,i) in areaData" :key="i" :label="item.n" :value="item.c"></el-option>
+      </el-select>
+    </div>
     <FormTemp :formArr="formArr" :formObj="formObj" :rulesObj="rulesFrom" ref="ruleForm"></FormTemp>
     <SubButtonTemp :btnObj="btnObj" @addInfo="subFunc"></SubButtonTemp>
+   
   </div>
 </template>
 <script>
 import { parameter } from './component/parameter'
 import FormTemp from './component/formTemp.vue'
 import SubButtonTemp from './component/buttonTemp.vue'
+import area from './component/area.json'
 export default{
   name:"viewPage",
   data(){
     return{
+      areaData:area,
+      areaText:"",
+      props: {
+        checkStrictly: false,
+        value: 'y',
+        label: 'n',
+        children: 'c'
+      },
       rulesFrom: {
         name:[
           { required:true, message:'请输入账号！', trigger:"blur"},
@@ -324,6 +340,7 @@ export default{
     SubButtonTemp
   },
   mounted(){
+    console.log(this.areaData)
     this.formArr[1].children = this.parameters.riverOption;
     this.formArr[2].children = this.parameters.seasonData;
     this.formArr[3].children = this.parameters.seasonData;
@@ -344,6 +361,32 @@ export default{
     },
     addInfo(){
       console.log("保存数据")
+    },
+    selectChange(e){
+      console.log(e)
+      console.log(this.areaText)
+    },
+     // 获取地址
+     provincesChange(e) {
+      this.areaData.forEach(item => {
+        const { city, citys, cityId } = item;
+
+        if (cityId === e[0]) {
+          this.companyAuthLoginVO.province = city;
+          citys.forEach(value => {
+            const { city: val, citys: children, cityId: code } = value;
+
+            if (code === e[1]) {
+              this.companyAuthLoginVO.city = val;
+              children.forEach(v => {
+                if (v.cityId === e[2]) {
+                  this.companyAuthLoginVO.area = v.city;
+                }
+              })
+            }
+          })
+        }
+      })
     }
   }
 }
